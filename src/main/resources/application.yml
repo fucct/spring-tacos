@@ -1,0 +1,11 @@
+spring:
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+  thymeleaf:
+    cache: false
+  jpa:
+    hibernate:
+      ddl-auto: create

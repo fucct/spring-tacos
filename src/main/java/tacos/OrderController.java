@@ -2,6 +2,7 @@ package tacos;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -9,12 +10,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
 @RequestMapping("/orders")
+@AllArgsConstructor
 public class OrderController {
+
+    @Autowired
+    private final OrderRepository orderRepository;
+
 
     @GetMapping("/current")
     public String orderForm(Model model) {
@@ -28,6 +35,8 @@ public class OrderController {
             return "orderForm";
         }
         log.info("Order submitted: "+ order);
+        orderRepository.save(order);
+
         return "redirect:/";
     }
 }
