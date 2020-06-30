@@ -9,3 +9,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+  datasource:
+    url: "jdbc:h2:mem:testdb"
+  output:
+    ansi:
+      enabled: always
