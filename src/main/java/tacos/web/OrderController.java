@@ -2,6 +2,9 @@ package tacos.web;
 
 import javax.validation.Valid;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.Errors;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.support.SessionStatus;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import tacos.Order;
 import tacos.data.OrderRepository;
@@ -22,12 +27,19 @@ import tacos.User;
 @Controller
 @RequestMapping("/orders")
 @SessionAttributes("order")
+@RequiredArgsConstructor
 public class OrderController {
 
-	private OrderRepository orderRepo;
+	private final OrderRepository orderRepo;
 
-	public OrderController(OrderRepository orderRepo) {
-	  this.orderRepo = orderRepo;
+	private final OrderProps props;
+
+	@GetMapping
+	public String ordersForUser(@AuthenticationPrincipal User user, Model model) {
+		Pageable pageable = PageRequest.of(0, props.getPageSize());
+		model.addAttribute("orders", orderRepo.findByUserOrderByPlacedAtDesc(user, pageable));
+
+		return "orderList";
 	}
 
 	@GetMapping("/current")
